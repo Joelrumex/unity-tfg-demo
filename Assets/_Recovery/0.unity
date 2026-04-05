@@ -2079,10 +2079,9 @@ MonoBehaviour:
   abilities: []
   actOptions:
   - {fileID: 11400000, guid: 8d21d47aaf2528f4bbdb44eeb8735162, type: 2}
-  - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
   mercyBar: 100
-  mercyAvailable: 1
-  spriteRenderer: {fileID: 1203653389}
+  mercyAvailable: 0
+  spriteRenderer: {fileID: 0}
   animator: {fileID: 0}
 --- !u!212 &1203653389
 SpriteRenderer:
@@ -2645,17 +2644,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleUI
   playerHPBar: {fileID: 2101410133}
   enemyHPBar: {fileID: 1726529813}
-  mercyBar: {fileID: 820417924}
-  mercyBarRoot: {fileID: 820417922}
-  mainMenuPanel: {fileID: 862227635}
+  mercyBar: {fileID: 0}
+  mercyBarRoot: {fileID: 0}
+  mainMenuPanel: {fileID: 0}
   attackButton: {fileID: 724165739}
-  actButton: {fileID: 230841936}
-  mercyButton: {fileID: 368497107}
-  actMenuPanel: {fileID: 928824319}
-  actButtonsParent: {fileID: 712504862}
-  actButtonPrefab: {fileID: 230841934}
-  dialoguePanel: {fileID: 2121053933}
-  dialogueText: {fileID: 582644430}
+  actButton: {fileID: 0}
+  mercyButton: {fileID: 0}
+  actMenuPanel: {fileID: 0}
+  actButtonsParent: {fileID: 0}
+  actButtonPrefab: {fileID: 0}
+  dialoguePanel: {fileID: 0}
+  dialogueText: {fileID: 0}
   resultText: {fileID: 1535728467}
   turnLabel: {fileID: 1535728467}
 --- !u!1 &1602804198
@@ -2971,7 +2970,7 @@ MonoBehaviour:
   currentHP: 100
   attack: 10
   defense: 1
-  speed: 15
+  speed: 1
   abilities: []
   actOptions: []
   mercyBar: 0
