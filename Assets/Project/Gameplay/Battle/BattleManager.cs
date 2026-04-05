@@ -20,6 +20,11 @@ public class BattleManager : MonoBehaviour
     public BattleState state;
     private int _pendingEnemyDamage = 0;
 
+    void Start()
+    {
+        Debug.Log("BattleManager Start called");   // ← add this
+        StartCoroutine(SetupBattle());
+    }
     IEnumerator SetupBattle()
     {
         state = BattleState.START;
