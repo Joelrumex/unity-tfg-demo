@@ -16,6 +16,11 @@ public class TurnManager : MonoBehaviour
 
     public Unit GetCurrentUnit()
     {
+        if (_player == null || _enemy == null)
+        {
+            Debug.LogError("TurnManager: Player or Enemy is null!");
+            return _player ?? _enemy;
+        }
         return _isPlayerTurn ? _player : _enemy;
     }
 

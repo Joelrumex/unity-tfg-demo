@@ -22,9 +22,19 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("BattleManager Start called");   // ← add this
-        StartCoroutine(SetupBattle());
+        Debug.Log("BattleManager Start called");
+        if (ValidateReferences())
+            StartCoroutine(SetupBattle());
+        else
+            Debug.LogError("BattleManager: Missing required references! Check Inspector.");
     }
+
+    bool ValidateReferences()
+    {
+        return player != null && enemy != null && turnManager != null && 
+               combatSystem != null && enemyAI != null && battleUI != null && qteManager != null && mercySystem != null;
+    }
+
     IEnumerator SetupBattle()
     {
         state = BattleState.START;
@@ -34,7 +44,8 @@ public class BattleManager : MonoBehaviour
         enemyAI.Init(combatSystem);
         battleUI.Init(this);
 
-        qteManager.OnQTEComplete += OnQTEComplete;
+        if (qteManager != null)
+            qteManager.OnQTEComplete += OnQTEComplete;
 
         // Wire mercy events
         mercySystem.OnActUsed         += lines => battleUI.ShowDialogue(lines);
@@ -158,8 +169,10 @@ public class BattleManager : MonoBehaviour
     void EndBattle(BattleState result)
     {
         state = result;
-        qteManager.OnQTEComplete -= OnQTEComplete;
-        battleUI.HideMainMenu();
+        if (qteManager != null)
+            qteManager.OnQTEComplete -= OnQTEComplete;
+        if (battleUI != null)
+            battleUI.HideMainMenu();
         bool won = result == BattleState.WIN;
         battleUI.ShowResult(won ? "You showed mercy.\nBattle over." : "Defeat...");
     }

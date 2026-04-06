@@ -162,8 +162,15 @@ public class BattleUI : MonoBehaviour
 
     public void UpdateHPBars(Unit player, Unit enemy)
     {
-        playerHPBar.value = (float)player.currentHP / player.maxHP;
-        enemyHPBar.value  = (float)enemy.currentHP  / enemy.maxHP;
+        if (player == null || enemy == null)
+        {
+            Debug.LogError("BattleUI: Player or Enemy is null!");
+            return;
+        }
+        if (playerHPBar != null)
+            playerHPBar.value = (float)player.currentHP / player.maxHP;
+        if (enemyHPBar != null)
+            enemyHPBar.value  = (float)enemy.currentHP  / enemy.maxHP;
     }
 
     public void ShowResult(string message)
