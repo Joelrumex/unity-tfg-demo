@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement; 
 
 public enum BattleState { START, PLAYER_TURN, ENEMY_TURN, WIN, LOSE }
 
@@ -11,7 +12,8 @@ public class BattleManager : MonoBehaviour
     public EnemyAI enemyAI;
     public BattleUI battleUI;
     public QTEManager qteManager;
-    public MercySystem mercySystem;   // ← add this
+    public MercySystem mercySystem;
+    public BattleResult battleResult; 
 
     [Header("Units")]
     public Unit player;
@@ -22,7 +24,7 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("BattleManager Start called");   // ← add this
+        Debug.Log("BattleManager Start called");
         StartCoroutine(SetupBattle());
     }
     IEnumerator SetupBattle()
@@ -30,6 +32,9 @@ public class BattleManager : MonoBehaviour
         state = BattleState.START;
         player.InitUnit();
         enemy.InitUnit();
+
+        ApplyPreviousBattleEffects();
+
         turnManager.Init(player, enemy);
         enemyAI.Init(combatSystem);
         battleUI.Init(this);
@@ -40,32 +45,39 @@ public class BattleManager : MonoBehaviour
         mercySystem.OnActUsed         += lines => battleUI.ShowDialogue(lines);
         mercySystem.OnMercyBarUpdated += val   => battleUI.UpdateMercyBar(val);
         mercySystem.OnMercyUnlocked   +=  ()   => battleUI.ShowMercyUnlocked();
-        mercySystem.OnMercyGranted    +=  ()   => EndBattle(BattleState.WIN);
+        mercySystem.OnMercyGranted    +=  ()   => EndBattle(BattleState.WIN,wasMercy: true);
 
         battleUI.UpdateHPBars(player, enemy);
         battleUI.UpdateMercyBar(0f);
 
+        battleUI.ShowBattleStartBonus(battleResult.lastOutcome);
+
+
         yield return new WaitForSeconds(1f);
+         battleResult.Clear();
         StartNextTurn();
     }
 
-    void StartNextTurn()
+    void ApplyPreviousBattleEffects()
     {
-        if (state == BattleState.ENEMY_TURN) return;
-        if (enemy.IsDead())  { EndBattle(BattleState.WIN);  return; }
-        if (player.IsDead()) { EndBattle(BattleState.LOSE); return; }
+        switch (battleResult.lastOutcome)
+        {
+            case BattleOutcome.Mercy:
+                // Shield is handled in OnQTEComplete — no stat change needed
+                Debug.Log($"Mercy bonus active: {battleResult.shieldChance * 100}% shield chance");
+                break;
 
-        if (turnManager.IsPlayerTurn())
-        {
-            state = BattleState.PLAYER_TURN;
-            battleUI.ShowMainMenu(enemy.mercyAvailable);
-        }
-        else
-        {
-            state = BattleState.ENEMY_TURN;
-            StartCoroutine(RunEnemyTurn());
+            case BattleOutcome.Killed:
+                player.attack  += battleResult.bonusAttack;
+                player.defense += battleResult.bonusDefense;
+                player.speed   += battleResult.bonusSpeed;
+                Debug.Log($"Kill bonus applied: +{battleResult.bonusAttack} ATK, " +
+                          $"+{battleResult.bonusDefense} DEF, +{battleResult.bonusSpeed} SPD");
+                break;
         }
     }
+
+
 
     // ── Player actions ──────────────────────────────────────
 
@@ -120,6 +132,25 @@ public class BattleManager : MonoBehaviour
 
     // ── Enemy turn ──────────────────────────────────────────
 
+    void StartNextTurn()
+    {
+        if (state == BattleState.ENEMY_TURN) return;
+        if (enemy.IsDead())  { EndBattle(BattleState.WIN,  wasMercy: false); return; }
+        if (player.IsDead()) { EndBattle(BattleState.LOSE, wasMercy: false); return; }
+
+        if (turnManager.IsPlayerTurn())
+        {
+            state = BattleState.PLAYER_TURN;
+            battleUI.ShowMainMenu(enemy.mercyAvailable);
+        }
+        else
+        {
+            state = BattleState.ENEMY_TURN;
+            StartCoroutine(RunEnemyTurn());
+        }
+    }
+
+
     IEnumerator RunEnemyTurn()
     {
         if (state != BattleState.ENEMY_TURN) yield break;
@@ -131,7 +162,7 @@ public class BattleManager : MonoBehaviour
             qteManager.StartQTE();
         else
         {
-            // Enemy healed itself — no QTE needed
+            state = BattleState.START;
             turnManager.AdvanceTurn();
             StartNextTurn();
         }
@@ -146,6 +177,17 @@ public class BattleManager : MonoBehaviour
             _                 => _pendingEnemyDamage
         };
 
+        if (finalDamage > 0 && battleResult.lastOutcome == BattleOutcome.Mercy)
+        {
+            bool shielded = Random.value < battleResult.shieldChance;
+            if (shielded)
+            {
+                finalDamage = 0;
+                battleUI.ShowShieldPopup();   // Visual feedback
+                Debug.Log("Shield triggered from mercy carry-over!");
+            }
+        }
+
         if (finalDamage > 0) player.TakeDamage(finalDamage);
         battleUI.UpdateHPBars(player, enemy);
         state = BattleState.START;   // Clear ENEMY_TURN lock before advancing
@@ -155,12 +197,40 @@ public class BattleManager : MonoBehaviour
 
     // ── End ─────────────────────────────────────────────────
 
-    void EndBattle(BattleState result)
+    void EndBattle(BattleState result, bool wasMercy)
     {
         state = result;
         qteManager.OnQTEComplete -= OnQTEComplete;
         battleUI.HideMainMenu();
-        bool won = result == BattleState.WIN;
-        battleUI.ShowResult(won ? "You showed mercy.\nBattle over." : "Defeat...");
+
+        if (result == BattleState.WIN)
+        {
+            if (wasMercy)
+            {
+                battleResult.RecordMercy();
+                battleUI.ShowResult("You showed mercy.\nYour kindness will protect you.");
+            }
+            else
+            {
+                battleResult.RecordKill();
+                battleUI.ShowResult("Enemy defeated!\nYou grow stronger.");
+            }
+        }
+        else
+        {
+            battleUI.ShowResult("Defeat...");
+        }
+
+        StartCoroutine(LoadNextScene(result));
+    }
+
+    IEnumerator LoadNextScene(BattleState result)
+    {
+        yield return new WaitForSeconds(2.5f); 
+
+        if (result == BattleState.WIN)
+            SceneManager.LoadScene("BattleScene1");
+        else
+            SceneManager.LoadScene("BattleScene");
     }
 }

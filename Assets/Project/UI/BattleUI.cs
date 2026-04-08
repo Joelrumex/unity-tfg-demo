@@ -49,6 +49,63 @@ public class BattleUI : MonoBehaviour
         resultText.gameObject.SetActive(false);
     }
 
+    [Header("Bonus Feedback")]
+    public GameObject shieldPopup;
+    public TextMeshProUGUI bonusAnnouncerText;
+
+    // ── New methods to add ────────────────────────────────────────
+
+    public void ShowShieldPopup()
+    {
+        Debug.Log("SHIELD TRIGGERED!"); 
+        StartCoroutine(FlashPopup(shieldPopup));
+    }
+
+    IEnumerator FlashPopup(GameObject popup)
+    {
+        if (popup == null) yield break;
+        popup.SetActive(true);
+        yield return new WaitForSeconds(1.2f);
+        popup.SetActive(false);
+    }
+
+    public void ShowBattleStartBonus(BattleOutcome outcome)
+    {
+        if (bonusAnnouncerText == null) return;
+
+        switch (outcome)
+        {
+            case BattleOutcome.Mercy:
+                bonusAnnouncerText.text = "✦ Mercy shield active this battle";
+                bonusAnnouncerText.color = Color.cyan;
+                break;
+            case BattleOutcome.Killed:
+                bonusAnnouncerText.text = "✦ Stats boosted from last victory";
+                bonusAnnouncerText.color = Color.yellow;
+                break;
+            default:
+                bonusAnnouncerText.gameObject.SetActive(false);
+                return;
+        }
+
+        bonusAnnouncerText.gameObject.SetActive(true);
+        StartCoroutine(FadeOutAnnouncer());
+    }
+
+    IEnumerator FadeOutAnnouncer()
+    {
+        yield return new WaitForSeconds(2f);
+        // Fade out over 0.5s
+        float t = 0f;
+        Color original = bonusAnnouncerText.color;
+        while (t < 0.5f)
+        {
+            t += Time.deltaTime;
+            bonusAnnouncerText.color = new Color(original.r, original.g, original.b, 1f - (t / 0.5f));
+            yield return null;
+        }
+        bonusAnnouncerText.gameObject.SetActive(false);
+    }
     // ── Main menu ────────────────────────────────────────────
 
     public void ShowMainMenu(bool mercyUnlocked)
@@ -85,7 +142,8 @@ public class BattleUI : MonoBehaviour
 
             // Capture act in closure
             var capturedAct = act;
-            btn.onClick.AddListener(() => {
+            btn.onClick.AddListener(() =>
+            {
                 actMenuPanel.SetActive(false);
                 _bm.PlayerUseAct(capturedAct);
             });
@@ -97,7 +155,8 @@ public class BattleUI : MonoBehaviour
         var backBtn = backGO.GetComponent<Button>();
         var backLabel = backGO.GetComponentInChildren<TextMeshProUGUI>();
         backLabel.text = "← Back";
-        backBtn.onClick.AddListener(() => {
+        backBtn.onClick.AddListener(() =>
+        {
             actMenuPanel.SetActive(false);
             ShowMainMenu(_bm.enemy.mercyAvailable);
         });
@@ -163,7 +222,7 @@ public class BattleUI : MonoBehaviour
     public void UpdateHPBars(Unit player, Unit enemy)
     {
         playerHPBar.value = (float)player.currentHP / player.maxHP;
-        enemyHPBar.value  = (float)enemy.currentHP  / enemy.maxHP;
+        enemyHPBar.value = (float)enemy.currentHP / enemy.maxHP;
     }
 
     public void ShowResult(string message)
