@@ -231,6 +231,6 @@ public class BattleManager : MonoBehaviour
         if (result == BattleState.WIN)
             SceneManager.LoadScene("BattleScene1");
         else
-            SceneManager.LoadScene("BattleScene");
+            SceneManager.LoadScene("PlayerMovement");
     }
 }
