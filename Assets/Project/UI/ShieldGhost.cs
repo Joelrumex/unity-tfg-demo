@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class ShieldGhost : MonoBehaviour
 {
+    [Header("Settings")]
+    public float scale = 1.0f;
+
     private SpriteRenderer _sr;
     private Transform _spriteChild;   // Child handles scale only
 
@@ -42,8 +45,8 @@ public class ShieldGhost : MonoBehaviour
         // Parent controls position only — never touched by scale
         transform.position = playerPosition + new Vector3(-1.2f, 0.2f, 0f);
 
-        // Child controls scale only — never touches position
-        _spriteChild.localScale = new Vector3(-scale.x, scale.y, 1f);  // X negative = face left
+        // Apply custom scale
+        transform.localScale = new Vector3(scale, scale, scale);
 
         StartCoroutine(GhostAnimation());
     }
