@@ -8,26 +8,28 @@ This is a Unity 2D RPG battle system project (similar to UNDERTALE's combat). Th
 - Mercy system for pacifist endings
 - Unit/Ability/ActOption data structures as ScriptableObjects
 
-**Unity Version**: 2022.3+ (Universal Render Pipeline)
+**Unity Version**: 6000.4.0f1 (Universal Render Pipeline)
 **Language**: C#
 
 ## Build & Run Commands
 
 ### Opening the Project
-- Open the project in **Unity Editor** (double-click the `.unity` file or open via Unity Hub)
-- The project uses the solution file `tfg-demo.slnx`
-
-### Building
-- **Build Player**: Unity Editor > File > Build Settings > Build (select platform)
-- **Development Build**: Enable "Development Build" in Build Settings for debug symbols
+- Open in **Unity Editor 6000.4.0f1** (specify version exactly)
+- Solution file: `tfg-demo.slnx`
 
 ### Running in Editor
-- Press **Play** button in Unity Editor to run the game
-- Use **Pause** to debug frame-by-frame
+- Press **Play** in Unity Editor to start the game
+- **Common issue**: Editor may freeze on Play if there are null reference errors or infinite loops in initialization. Check console logs first.
+- Use Pause to debug frame-by-frame
 
-### Recompiling Scripts
-- Scripts automatically recompile when saved in Unity
-- Manual refresh: Unity Editor > Assets > Refresh (or Ctrl+R)
+### Building Player
+- File > Build Settings > Build (select platform)
+- Enable "Development Build" for debug symbols
+
+### Script Compilation
+- Scripts auto-recompile on save in Unity
+- Manual refresh: Assets > Refresh or Ctrl+R
+- Use `skill` tool: `assets-refresh` for forcing compilation
 
 ## Code Style Guidelines
 
@@ -152,12 +154,18 @@ StartCoroutine(RunSequence());
 
 ## Working with Unity-MCP (AI Tools)
 
-This project has Unity-MCP configured for AI-assisted development. Available tools:
-- Scene management (create, open, save scenes)
-- GameObject manipulation (create, modify, find, destroy)
-- Asset management (create materials, prefabs, scripts)
-- Animation/Animator control
-- Package management
-- Unity Editor state control (play, pause, stop)
+This project has Unity-MCP configured for AI-assisted development. Available tools via the `skill` tool:
+- **Scene management**: create, open, save, unload scenes
+- **GameObject**: find, create, modify, destroy, set parent, duplicate
+- **Components**: add, get, modify, destroy on GameObjects
+- **Assets**: find, get data, copy, move/rename, create folders, delete
+- **Prefabs**: create from GameObject, open edit mode, instantiate, save
+- **Materials & Shaders**: create materials, list/get shader data
+- **Animation**: create/get/modify AnimationClip and AnimatorController
+- **Package management**: search, list, add, remove UPM packages
+- **Editor state**: get/set playmode, pause, stop
+- **Selection**: get/set current editor selection
+- **Reflection**: find and call C# methods dynamically
+- **Screenshots**: capture from Game View, Scene View, or camera
 
-Use `skill` tool to load specialized workflows when needed.
+Load specialized workflows with `skill` tool when matching task type.

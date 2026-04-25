@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class ShieldGhost : MonoBehaviour
 {
+    [Header("Settings")]
+    public float scale = 1.0f;
+
     private SpriteRenderer _sr;
 
     void Awake()
@@ -20,8 +23,8 @@ public class ShieldGhost : MonoBehaviour
         // Position ghost between enemy and player, slightly in front
         transform.position = playerPosition + new Vector3(-1.2f, 0.2f, 0f);
 
-        // Flip to face toward enemy (left side)
-        transform.localScale = new Vector3(1f, 1f, 1f);
+        // Apply custom scale
+        transform.localScale = new Vector3(scale, scale, scale);
 
         StartCoroutine(GhostAnimation());
     }
