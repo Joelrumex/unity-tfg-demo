@@ -14,11 +14,23 @@ public class PlayerHealth : MonoBehaviour
     public float invulnerabilityTime = 0.5f;
     private bool canTakeDamage = true;
 
+    private SpriteRenderer spriteRenderer;
+
+    [Header("Hit Flash")]
+    public float flashDuration = 0.1f;
+    public Color flashColor = Color.red;
+    private Color originalColor;
     private Rigidbody2D rb;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (spriteRenderer != null)
+        {
+            originalColor = spriteRenderer.color;
+        }
     }
 
     void Start()
@@ -41,7 +53,7 @@ public class PlayerHealth : MonoBehaviour
         {
             Die();
         }
-
+        StartCoroutine(HitFlash());
         StartCoroutine(Invulnerability());
     }
 
@@ -62,9 +74,18 @@ public class PlayerHealth : MonoBehaviour
         canTakeDamage = true;
     }
 
+    IEnumerator HitFlash()
+    {
+        if (spriteRenderer == null) yield break;
+
+        spriteRenderer.color = flashColor;
+        yield return new WaitForSeconds(flashDuration);
+        spriteRenderer.color = originalColor;
+    }
+
     void Die()
     {
         Debug.Log("Jugador muerto");
-        SceneManager.LoadScene("Platform_F1");
+        SceneManager.LoadScene("ForestPlatformerScene");
     }
 }
