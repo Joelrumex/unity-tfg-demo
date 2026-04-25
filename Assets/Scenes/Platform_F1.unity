@@ -444,9 +444,8 @@ MonoBehaviour:
   player: {fileID: 1542676106}
   moveSpeed: 5
   jumpForce: 10
-  minJumpTime: 1
-  maxJumpTime: 5
   damage: 2
+  damageCooldown: 1
 --- !u!95 &362514519
 Animator:
   serializedVersion: 7
@@ -865,7 +864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96b635245be034a4db2f5d57d450a21a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
-  playerHealth: 10
+  playerHealth: 100
 --- !u!4 &714381851
 Transform:
   m_ObjectHideFlags: 0

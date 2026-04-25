@@ -15,6 +15,7 @@ public class BattleManager : MonoBehaviour
     public MercySystem mercySystem;
     public BattleResult battleResult;
     public ShieldGhost shieldGhost;
+    public SlashEffect slashEffect;
 
     [Header("Units")]
     public Unit player;
@@ -185,17 +186,25 @@ public class BattleManager : MonoBehaviour
             bool shielded = Random.value < battleResult.shieldChance;
             if (shielded)
             {
-                Debug.Log("Shield triggered! Negating damage and showing ghost.");
                 finalDamage = 0;
-                shieldGhost.Appear(battleResult.merciedEnemySprite, player.transform.position);
+                shieldGhost.Appear(
+                    battleResult.merciedEnemySprite,
+                    player.transform.position,
+                    battleResult.merciedEnemyGhostScale
+                );
                 battleUI.ShowShieldPopup();
-                Debug.Log("Shield triggered — ghost appeared!");
             }
         }
 
-        if (finalDamage > 0) player.TakeDamage(finalDamage);
+        // Play slash on player position if damage goes through
+        if (finalDamage > 0)
+        {
+            slashEffect.Play(player.transform.position);
+            player.TakeDamage(finalDamage);
+        }
+
         battleUI.UpdateHPBars(player, enemy);
-        state = BattleState.START;   // Clear ENEMY_TURN lock before advancing
+        state = BattleState.START;
         turnManager.AdvanceTurn();
         StartNextTurn();
     }
@@ -212,7 +221,10 @@ public class BattleManager : MonoBehaviour
         {
             if (wasMercy)
             {
-                battleResult.RecordMercy(enemy.spriteRenderer.sprite);  // ← pass sprite
+                battleResult.RecordMercy(
+                    enemy.spriteRenderer.sprite,
+                    enemy.ghostScale
+                );
                 battleUI.ShowResult("You showed mercy.\nYour kindness will protect you.");
             }
             else
