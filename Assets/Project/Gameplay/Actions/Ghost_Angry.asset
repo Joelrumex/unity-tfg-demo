@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8416df98839a14341a3c026f8168a930, type: 3}
   m_Name: Ghost_Angry
   m_EditorClassIdentifier: Assembly-CSharp::ActOption
-  actionName: Shit on him
+  actionName: Insult him
   dialogueLines:
   - BROOOO wtfff
   - OHOHHHH
   mercyGain: -20
   requiredUses: 1
-  useCount: 5
+  useCount: 0

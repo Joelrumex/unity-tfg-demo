@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad164d5fbcad16246b7adf6244c255ec, type: 3}
   m_Name: Attack
   m_EditorClassIdentifier: Assembly-CSharp::Ability
-  abilityName: Attack
-  baseDamage: 10
+  abilityName: Fire Sword
+  baseDamage: 40
   healAmount: 0
   targetsEnemy: 1
   description: 

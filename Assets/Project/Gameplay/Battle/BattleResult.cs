@@ -6,16 +6,28 @@ public enum BattleOutcome { None, Killed, Mercy }
 public class BattleResult : ScriptableObject
 {
     public BattleOutcome lastOutcome = BattleOutcome.None;
-
-    // Mercy reward
-    public float shieldChance = 0.35f;      // 35% chance to block an attack
-
-    // Kill reward — flat stat bonuses applied on next battle start
+    public float shieldChance = 0.35f;
     public int bonusAttack  = 5;
     public int bonusDefense = 3;
     public int bonusSpeed   = 2;
 
-    public void RecordMercy() => lastOutcome = BattleOutcome.Mercy;
-    public void RecordKill()  => lastOutcome = BattleOutcome.Killed;
-    public void Clear()       => lastOutcome = BattleOutcome.None;
+    public Sprite merciedEnemySprite; 
+
+    public void RecordMercy(Sprite enemySprite)
+    {
+        lastOutcome = BattleOutcome.Mercy;
+        merciedEnemySprite = enemySprite;
+    }
+
+    public void RecordKill()
+    {
+        lastOutcome = BattleOutcome.Killed;
+        merciedEnemySprite = null;
+    }
+
+    public void Clear()
+    {
+        lastOutcome = BattleOutcome.None;
+        merciedEnemySprite = null;
+    }
 }
