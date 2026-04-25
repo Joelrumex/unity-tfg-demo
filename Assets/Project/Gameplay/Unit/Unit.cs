@@ -20,7 +20,10 @@ public class Unit : MonoBehaviour
 
     [Header("Mercy System")]
     public List<ActOption> actOptions = new List<ActOption>();  // Assign in Inspector per enemy
-    public float mercyBar = 0f;             // 0 to 100
+    public float mercyBar = 0f;
+
+    public Vector2 ghostScale = Vector2.one; 
+
     public bool mercyAvailable = false;
 
     [Header("2D References")]

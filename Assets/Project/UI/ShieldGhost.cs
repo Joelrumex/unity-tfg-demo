@@ -4,34 +4,54 @@ using UnityEngine;
 public class ShieldGhost : MonoBehaviour
 {
     private SpriteRenderer _sr;
+    private Transform _spriteChild;   // Child handles scale only
 
     void Awake()
     {
-        _sr = GetComponent<SpriteRenderer>();
-        _sr.color = new Color(1f, 1f, 1f, 0f);   // Start invisible
+        // Create a child GameObject to hold the sprite
+        // This way parent = position, child = scale
+        var child = new GameObject("GhostSprite");
+        child.transform.SetParent(transform);
+        child.transform.localPosition = Vector3.zero;
+        child.transform.localScale    = Vector3.one;
+
+        _sr = child.AddComponent<SpriteRenderer>();
+        _sr.sortingLayerName = "Units";
+        _sr.sortingOrder     = 2;
+        _sr.color = new Color(0.6f, 0.85f, 1f, 0f);   // Blue ghost tint, invisible
+
+        _spriteChild = child.transform;
     }
 
-    public void Appear(Sprite sprite, Vector3 playerPosition)
+    public void Appear(Sprite sprite, Vector3 playerPosition, Vector2 scale)
     {
-        if (sprite == null) return;
+        if (sprite == null)
+        {
+            Debug.LogWarning("ShieldGhost: sprite is null.");
+            return;
+        }
+
+        if (scale == Vector2.zero)
+        {
+            Debug.LogWarning("ShieldGhost: scale is (0,0) — defaulting to (1,1).");
+            scale = Vector2.one;
+        }
 
         _sr.sprite = sprite;
 
-        // Position ghost between enemy and player, slightly in front
+        // Parent controls position only — never touched by scale
         transform.position = playerPosition + new Vector3(-1.2f, 0.2f, 0f);
 
-        // Flip to face toward enemy (left side)
-        transform.localScale = new Vector3(1f, 1f, 1f);
+        // Child controls scale only — never touches position
+        _spriteChild.localScale = new Vector3(-scale.x, scale.y, 1f);  // X negative = face left
 
         StartCoroutine(GhostAnimation());
     }
 
     IEnumerator GhostAnimation()
     {
-        // 1 — Fade in quickly
         yield return StartCoroutine(Fade(0f, 0.7f, 0.15f));
 
-        // 2 — Pulse glow (flicker alpha slightly)
         float elapsed = 0f;
         while (elapsed < 0.6f)
         {
@@ -41,9 +61,7 @@ public class ShieldGhost : MonoBehaviour
             yield return null;
         }
 
-        // 3 — Fade out slowly
         yield return StartCoroutine(Fade(0.7f, 0f, 0.4f));
-
         _sr.sprite = null;
     }
 
