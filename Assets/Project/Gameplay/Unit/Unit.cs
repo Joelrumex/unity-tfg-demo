@@ -29,11 +29,18 @@ public class Unit : MonoBehaviour
 
     public virtual void InitUnit()
     {
-        currentHP = maxHP;
+        if (isPlayerUnit)
+        {
+            currentHP = PlayerManager.Instance.playerHealth;
+        }
+        else
+        {
+            currentHP = maxHP;
+        }
+
         mercyBar = 0f;
         mercyAvailable = false;
 
-        // Reset all ACT use counts for a fresh battle
         foreach (var act in actOptions)
             act.useCount = 0;
     }
@@ -56,12 +63,16 @@ public class Unit : MonoBehaviour
         return false;
     }
 
-   
+
     public int TakeDamage(int rawDamage)
     {
         int damage = Mathf.Max(1, rawDamage - defense);
         currentHP -= damage;
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+        if (isPlayerUnit)
+        {
+            PlayerManager.Instance.playerHealth = currentHP;
+        }
         Debug.Log($"{unitName} took {damage} damage. HP: {currentHP}/{maxHP}");
         return damage;
     }
@@ -69,6 +80,10 @@ public class Unit : MonoBehaviour
     public void Heal(int amount)
     {
         currentHP = Mathf.Clamp(currentHP + amount, 0, maxHP);
+        if (isPlayerUnit)
+        {
+            PlayerManager.Instance.playerHealth = currentHP;
+        }
     }
 
     public bool IsDead() => currentHP <= 0;
