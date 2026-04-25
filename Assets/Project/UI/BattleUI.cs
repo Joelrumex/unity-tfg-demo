@@ -33,6 +33,9 @@ public class BattleUI : MonoBehaviour
     public TextMeshProUGUI resultText;
     public TextMeshProUGUI turnLabel;
 
+    [Header("Turn Info")]
+    public TextMeshProUGUI turnText;
+
     private BattleManager _bm;
     private List<GameObject> _actButtons = new List<GameObject>();
 
@@ -57,7 +60,7 @@ public class BattleUI : MonoBehaviour
 
     public void ShowShieldPopup()
     {
-        Debug.Log("SHIELD TRIGGERED!"); 
+        Debug.Log("SHIELD TRIGGERED!");
         StartCoroutine(FlashPopup(shieldPopup));
     }
 
@@ -69,6 +72,13 @@ public class BattleUI : MonoBehaviour
         popup.SetActive(false);
     }
 
+    public void UpdateTurnText(int turnNumber, bool isPlayerTurn)
+    {
+        if (turnText == null) return;
+        string whose = isPlayerTurn ? "Your turn" : "Enemy turn";
+        turnText.text = $"Turn {turnNumber} : {whose}";
+    }
+    
     public void ShowBattleStartBonus(BattleOutcome outcome)
     {
         if (bonusAnnouncerText == null) return;

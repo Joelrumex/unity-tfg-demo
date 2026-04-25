@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eacd08774daaa474d8300738239980a1, type: 3}
   m_Name: BattleResult
   m_EditorClassIdentifier: Assembly-CSharp::BattleResult
-  lastOutcome: 0
-  shieldChance: 1
+  lastOutcome: 2
+  shieldChance: 2
   bonusAttack: 5
   bonusDefense: 3
   bonusSpeed: 2
+  merciedEnemySprite: {fileID: -7243588513143234612, guid: 9e75e25006a51584697b2e39c56c5105, type: 3}
