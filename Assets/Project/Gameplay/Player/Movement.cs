@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class Movement : MonoBehaviour
 {
     [Header("Movement")]
@@ -17,17 +16,47 @@ public class Movement : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.1f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("Wall Check")]
+    [SerializeField] private Transform wallCheckLeft;
+    [SerializeField] private Transform wallCheckRight;
+    [SerializeField] private float wallCheckRadius = 0.1f;
+    [SerializeField] private LayerMask wallLayer;
+
     private Rigidbody2D rb;
     private bool isGrounded;
+    private bool isTouchingWall;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        animator.SetBool("isGrounded", isGrounded);
+
+        // Detectar contacto con pared
+        bool touchingLeft  = Physics2D.OverlapCircle(wallCheckLeft.position,  wallCheckRadius, wallLayer);
+        bool touchingRight = Physics2D.OverlapCircle(wallCheckRight.position, wallCheckRadius, wallLayer);
+        float moveInput = Input.GetAxisRaw("Horizontal");
+
+        if (moveInput > 0)
+        {
+            spriteRenderer.flipX = false;
+        }
+        else if (moveInput < 0)
+        {
+            spriteRenderer.flipX = true;
+        }
+
+        isTouchingWall = !isGrounded &&
+                         ((touchingLeft  && moveInput < 0) ||
+                          (touchingRight && moveInput > 0));
 
         if (Input.GetKeyDown(KeyCode.W) && isGrounded)
         {
@@ -38,12 +67,17 @@ public class Movement : MonoBehaviour
     void FixedUpdate()
     {
         float moveInput = Input.GetAxisRaw("Horizontal");
-        float targetSpeed = moveInput * moveSpeed;
-        float speedDiff = targetSpeed - rb.linearVelocity.x;
-        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
-        float movement = speedDiff * accelRate;
-        rb.AddForce(movement * Vector2.right);
 
+        // Si está pegado a la pared, no aplicar fuerza horizontal
+        if (!isTouchingWall)
+        {
+            float targetSpeed = moveInput * moveSpeed;
+            float speedDiff   = targetSpeed - rb.linearVelocity.x;
+            float accelRate   = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
+            rb.AddForce(speedDiff * accelRate * Vector2.right);
+        }
+
+        // Gravedad variable
         if (rb.linearVelocity.y < 0)
         {
             rb.gravityScale = fallMultiplier;
