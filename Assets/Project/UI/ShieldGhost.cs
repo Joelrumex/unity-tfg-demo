@@ -46,7 +46,7 @@ public class ShieldGhost : MonoBehaviour
         transform.position = playerPosition + new Vector3(-1.2f, 0.2f, 0f);
 
         // Apply custom scale
-        transform.localScale = new Vector3(scale, scale, scale);
+        _spriteChild.localScale = new Vector3(-scale.x, scale.y, 1f);  // X negative = face left
 
         StartCoroutine(GhostAnimation());
     }

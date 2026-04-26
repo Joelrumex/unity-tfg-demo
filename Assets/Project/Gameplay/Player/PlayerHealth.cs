@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class PlayerHealth : MonoBehaviour
 {
     public int health = 100;
+    public HealthBarUI healthBar;
 
     [Header("Knockback")]
     public float knockbackForce = 10f;
@@ -35,6 +36,7 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
+        healthBar.SetMaxHealth(health);
         health = PlayerManager.Instance.playerHealth;
     }
 
@@ -46,6 +48,7 @@ public class PlayerHealth : MonoBehaviour
 
         health -= amount;
         PlayerManager.Instance.playerHealth = health;
+        healthBar.SetHealth(health);
 
         ApplyKnockback(damageSource);
 

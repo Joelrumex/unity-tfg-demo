@@ -22,16 +22,6 @@
       },
       "url": "https://package.openupm.com"
     },
-    "com.ivanmurzak.unity.mcp.animation": {
-      "version": "1.1.22",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.ivanmurzak.unity.mcp": "0.63.3",
-        "com.unity.modules.animation": "1.0.0"
-      },
-      "url": "https://package.openupm.com"
-    },
     "com.merry-yellow.code-assist": {
       "version": "file:com.merry-yellow.code-assist",
       "depth": 0,

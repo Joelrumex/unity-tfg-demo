@@ -7,6 +7,7 @@ public class KillZone : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            PlayerManager.Instance.playerHealth = 100; // Reset health to full
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }

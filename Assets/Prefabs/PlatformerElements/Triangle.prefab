@@ -155,4 +155,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98128d0a76921294b9bff9aae7e97ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spike
-  damage: 1
+  damage: 5
