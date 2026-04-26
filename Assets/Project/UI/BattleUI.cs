@@ -24,8 +24,6 @@ public class BattleUI : MonoBehaviour
     public GameObject actMenuPanel;       // Shown when player clicks ACT
     public Transform actButtonsParent;    // Vertical layout group
     public GameObject actButtonPrefab;    // Simple button prefab with TextMeshPro
-    [Header("Act Overlay")]
-    public GameObject actOverlay;   // ← drag ActOverlay GameObject here in Inspector
     [Header("Dialogue")]
     public GameObject dialoguePanel;
     public TextMeshProUGUI dialogueText;
@@ -136,7 +134,6 @@ public class BattleUI : MonoBehaviour
 
     void ShowActMenu()
     {
-        actOverlay.SetActive(true);
         actMenuPanel.SetActive(true);
         mainMenuPanel.SetActive(false);
 
@@ -151,7 +148,6 @@ public class BattleUI : MonoBehaviour
         observeLabel.color = new Color(0.95f, 0.85f, 0.3f);   // Gold color
         observeBtn.onClick.AddListener(() =>
         {
-            actOverlay.SetActive(false);
             actMenuPanel.SetActive(false);
             _bm.PlayerObserve();
         });
@@ -168,7 +164,6 @@ public class BattleUI : MonoBehaviour
             var capturedAct = act;
             btn.onClick.AddListener(() =>
             {
-                actOverlay.SetActive(false);
                 actMenuPanel.SetActive(false);
                 _bm.PlayerUseAct(capturedAct);
             });
@@ -181,7 +176,6 @@ public class BattleUI : MonoBehaviour
         backGO.GetComponentInChildren<TextMeshProUGUI>().text = "← Back";
         backBtn.onClick.AddListener(() =>
         {
-            actOverlay.SetActive(false);
             actMenuPanel.SetActive(false);
             ShowMainMenu(_bm.enemy.mercyAvailable);
         });

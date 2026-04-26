@@ -1,13 +1,19 @@
 fileFormatVersion: 2
-guid: cded65e4ddee48b46be2f28b71530eaf
+guid: 9ee009214af917546b3c34cf8e2c8aa4
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7790559991555437911
-    second: RED-sprite-Photoroom_0
+      213: -5755845867564706231
+    second: RedSister_0
   - first:
-      213: -8044444449400824515
-    second: RED-sprite-Photoroom_1
+      213: 7178116869501634837
+    second: RedSister_1
+  - first:
+      213: 2147162336893521332
+    second: RedSister_2
+  - first:
+      213: -7575074922754470851
+    second: RedSister_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -103,13 +109,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: RED-sprite-Photoroom_0
+      name: RedSister_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1280
-        height: 853
+        x: 635
+        y: 2101
+        width: 13
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -118,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9aac7fdb6fe52e390800000000000000
-      internalID: -7790559991555437911
+      spriteID: 946d7e1eda02f10b0800000000000000
+      internalID: -5755845867564706231
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: RED-sprite-Photoroom_1
+      name: RedSister_1
       rect:
         serializedVersion: 2
-        x: 265
-        y: 375
+        x: 650
+        y: 2110
         width: 20
-        height: 31
+        height: 33
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -140,8 +146,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d3dd91205646c5090800000000000000
-      internalID: -8044444449400824515
+      spriteID: 51942e2f24bcd9360800000000000000
+      internalID: 7178116869501634837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RedSister_2
+      rect:
+        serializedVersion: 2
+        x: 675
+        y: 534
+        width: 1369
+        height: 2213
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bdc2ade4c04ccd10800000000000000
+      internalID: 2147162336893521332
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RedSister_3
+      rect:
+        serializedVersion: 2
+        x: 655
+        y: 2082
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3c00420e7defd690800000000000000
+      internalID: -7575074922754470851
       vertices: []
       indices: 
       edges: []
@@ -160,8 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      RED-sprite-Photoroom_0: -7790559991555437911
-      RED-sprite-Photoroom_1: -8044444449400824515
+      RedSister_0: -5755845867564706231
+      RedSister_1: 7178116869501634837
+      RedSister_2: 2147162336893521332
+      RedSister_3: -7575074922754470851
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

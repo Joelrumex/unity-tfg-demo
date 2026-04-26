@@ -6,6 +6,10 @@ public enum BattleState { START, PLAYER_TURN, ENEMY_TURN, WIN, LOSE }
 
 public class BattleManager : MonoBehaviour
 {
+
+    [SerializeField] private string nextSceneName = "BattleScene";
+    [SerializeField] private string previousSceneName = "BattleScene";
+
     [Header("References")]
     public TurnManager turnManager;
     public CombatSystem combatSystem;
@@ -34,7 +38,7 @@ public class BattleManager : MonoBehaviour
         state = BattleState.START;
         player.InitUnit();
         enemy.InitUnit();
-        mercySystem.ResetPhase();  
+        mercySystem.ResetPhase();
 
         ApplyPreviousBattleEffects();
         turnManager.Init(player, enemy);
@@ -256,9 +260,9 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(2.5f);
 
         if (result == BattleState.WIN)
-            SceneManager.LoadScene("BattleScene1");
+            SceneManager.LoadScene(nextSceneName);
         else
-            SceneManager.LoadScene("PlayerMovement");
+            SceneManager.LoadScene(previousSceneName);
     }
 
 
