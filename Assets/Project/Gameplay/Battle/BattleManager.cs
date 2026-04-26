@@ -128,11 +128,8 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EndTurnAfterDialogue()
     {
-        yield return new WaitForSeconds(2.5f);   // Regular dialogue
-
-        // Extra wait if completion dialogue also played
-        if (battleUI.IsShowingDialogue())
-            yield return new WaitForSeconds(2.5f);
+        // Wait until the player has clicked through all lines
+        yield return new WaitUntil(() => !battleUI.IsShowingDialogue());
 
         battleUI.HideDialogue();
         EndPlayerTurn();
@@ -278,10 +275,8 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator ShowCompletionDialogue(string[] lines)
     {
-        // Wait for regular dialogue to finish
-        float regularDuration = 2.5f;
-        yield return new WaitForSeconds(regularDuration);
-
+        // Wait for regular dialogue to finish first
+        yield return new WaitUntil(() => !battleUI.IsShowingDialogue());
         battleUI.ShowDialogue(lines);
     }
 }

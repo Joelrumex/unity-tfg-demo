@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eacd08774daaa474d8300738239980a1, type: 3}
   m_Name: BattleResult
   m_EditorClassIdentifier: Assembly-CSharp::BattleResult
-  lastOutcome: 0
+  lastOutcome: 2
   shieldChance: 2
   bonusAttack: 5
   bonusDefense: 3
   bonusSpeed: 2
-  merciedEnemySprite: {fileID: -7790559991555437911, guid: cded65e4ddee48b46be2f28b71530eaf, type: 3}
+  merciedEnemySprite: {fileID: 3128056520877038577, guid: 13b9e70dafbc8d546ad7a4c2be36d6ed, type: 3}
   merciedEnemyGhostScale: {x: 1, y: 1}
