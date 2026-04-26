@@ -27,6 +27,7 @@ public class BattleUI : MonoBehaviour
     [Header("Dialogue")]
     public GameObject dialoguePanel;
     public TextMeshProUGUI dialogueText;
+    public TextMeshProUGUI promptText;
 
     [Header("Result & Labels")]
     public TextMeshProUGUI resultText;
@@ -248,19 +249,50 @@ public class BattleUI : MonoBehaviour
 
     IEnumerator TypewriteDialogue(string[] lines)
     {
+        _isShowingDialogue = true;
+        dialoguePanel.SetActive(true);
+
         foreach (var line in lines)
         {
+            // Typewrite the line character by character
             dialogueText.text = "";
-            foreach (char c in line)
+            bool finishedTyping = false;
+
+            StartCoroutine(TypewriteLine(line, () => finishedTyping = true));
+
+            // If player presses E before typing finishes — skip to full line instantly
+            while (!finishedTyping)
             {
-                dialogueText.text += c;
-                yield return new WaitForSeconds(0.04f);
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    StopCoroutine(nameof(TypewriteLine));
+                    dialogueText.text = line;
+                    finishedTyping = true;
+                }
+                yield return null;
             }
-            yield return new WaitForSeconds(0.8f);
+
+            // Show the "press E" indicator then wait for input
+            promptText.gameObject.SetActive(true);
+            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
+            promptText.gameObject.SetActive(false);
+
+            yield return null;   // Wait one frame so GetKeyDown doesn't fire twice
         }
-        _isShowingDialogue = false;   // ← mark as done when typewriter finishes
+
+        _isShowingDialogue = false;
     }
 
+    IEnumerator TypewriteLine(string line, System.Action onComplete)
+    {
+        dialogueText.text = "";
+        foreach (char c in line)
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(0.04f);
+        }
+        onComplete?.Invoke();
+    }
     public void UpdateHPBars(Unit player, Unit enemy)
     {
         playerHPBar.value = (float)player.currentHP / player.maxHP;

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8416df98839a14341a3c026f8168a930, type: 3}
   m_Name: Mage_Phase2_AskName
   m_EditorClassIdentifier: Assembly-CSharp::ActOption
-  actionName: Sit Down
+  actionName: Ask his name
   phase: 1
   dialogueLines:
   - '"''What''s your name?'' you ask."'
