@@ -10,12 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8416df98839a14341a3c026f8168a930, type: 3}
-  m_Name: Ghost_Angry
+  m_Name: Greet
   m_EditorClassIdentifier: Assembly-CSharp::ActOption
-  actionName: Insult him
+  actionName: Greet him
   dialogueLines:
-  - BROOOO wtfff
-  - OHOHHHH
-  mercyGain: -20
-  requiredUses: 1
-  useCount: 0
+  - '*Stares at you silently'
+  - '*Nothing happens'
+  completionDialogueLines:
+  - '*He is starting to get angry'
+  - '*You lost mercy gain'
+  mercyGain: -10
+  requiredUses: 3
+  useCount: 1

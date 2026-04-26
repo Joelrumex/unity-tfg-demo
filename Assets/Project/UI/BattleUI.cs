@@ -9,7 +9,7 @@ public class BattleUI : MonoBehaviour
     [Header("HP Bars")]
     public Slider playerHPBar;
     public Slider enemyHPBar;
-
+    private bool _isShowingDialogue = false;
     [Header("Mercy Bar")]
     public Slider mercyBar;               // A second slider under the enemy HP bar
     public GameObject mercyBarRoot;       // Parent object to show/hide
@@ -78,7 +78,7 @@ public class BattleUI : MonoBehaviour
         string whose = isPlayerTurn ? "Your turn" : "Enemy turn";
         turnText.text = $"Turn {turnNumber} : {whose}";
     }
-    
+
     public void ShowBattleStartBonus(BattleOutcome outcome)
     {
         if (bonusAnnouncerText == null) return;
@@ -203,9 +203,19 @@ public class BattleUI : MonoBehaviour
 
     public void ShowDialogue(string[] lines)
     {
+        _isShowingDialogue = true;
         dialoguePanel.SetActive(true);
         StartCoroutine(TypewriteDialogue(lines));
     }
+
+    public void HideDialogue()
+    {
+        _isShowingDialogue = false;
+        StopCoroutine(nameof(TypewriteDialogue));
+        dialoguePanel.SetActive(false);
+    }
+
+    public bool IsShowingDialogue() => _isShowingDialogue;
 
     IEnumerator TypewriteDialogue(string[] lines)
     {
@@ -215,19 +225,12 @@ public class BattleUI : MonoBehaviour
             foreach (char c in line)
             {
                 dialogueText.text += c;
-                yield return new WaitForSeconds(0.04f);   // Typewriter speed
+                yield return new WaitForSeconds(0.04f);
             }
-            yield return new WaitForSeconds(0.8f);        // Pause between lines
+            yield return new WaitForSeconds(0.8f);
         }
+        _isShowingDialogue = false;   // ← mark as done when typewriter finishes
     }
-
-    public void HideDialogue()
-    {
-        StopCoroutine(nameof(TypewriteDialogue));
-        dialoguePanel.SetActive(false);
-    }
-
-    // ── HP bars & result ──────────────────────────────────────
 
     public void UpdateHPBars(Unit player, Unit enemy)
     {

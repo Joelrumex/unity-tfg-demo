@@ -2308,8 +2308,8 @@ Transform:
   m_GameObject: {fileID: 1004464191}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-   m_LocalPosition: {x: -4.88, y: 0.04, z: 0}
-   m_LocalScale: {x: 1.0, y: 1.0, z: 1.0}
+  m_LocalPosition: {x: -4.88, y: 0.04, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2357,7 +2357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c544da98bc51c074fb978e6dfe5672e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Unit
-  unitName: Unit
+  unitName: Knight
   isPlayerUnit: 0
   maxHP: 100
   currentHP: 0
@@ -2368,6 +2368,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a3c050474adc7ab4db35b75d29e99987, type: 2}
   actOptions:
   - {fileID: 11400000, guid: 8d21d47aaf2528f4bbdb44eeb8735162, type: 2}
+  - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
+  - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
+  - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
   - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
   mercyBar: 100
   ghostScale: {x: 1, y: 1}
@@ -3021,14 +3024,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1428417477}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb7b0b9d6a8f4de478f5bc83d59382b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 99d63b3fcd520364cba5d4b75727fec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlashEffect
-  slashCount: 3
-  slashDuration: 0.18
-  slashLength: 1.8
+  slashSprite: {fileID: -3696019449777573715, guid: d00768c47e93d0f428542d46267e51cc, type: 3}
   slashColor: {r: 1, g: 1, b: 1, a: 1}
-  lineWidth: 0.06
+  flipX: 1
+  slashCount: 1
+  duration: 1
+  baseScale: {x: 0.05, y: 0.05}
+  scaleVariance: 0.2
+  verticalSpread: 0
 --- !u!1 &1456931829
 GameObject:
   m_ObjectHideFlags: 0

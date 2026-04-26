@@ -45,6 +45,7 @@ public class BattleManager : MonoBehaviour
 
         // Wire mercy events
         mercySystem.OnActUsed += lines => battleUI.ShowDialogue(lines);
+        mercySystem.OnActCompleted += lines => StartCoroutine(ShowCompletionDialogue(lines));
         mercySystem.OnMercyBarUpdated += val => battleUI.UpdateMercyBar(val);
         mercySystem.OnMercyUnlocked += () => battleUI.ShowMercyUnlocked();
         mercySystem.OnMercyGranted += () => EndBattle(BattleState.WIN, wasMercy: true);
@@ -119,8 +120,12 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EndTurnAfterDialogue()
     {
-        // Wait for dialogue to finish displaying before advancing turn
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(2.5f);   // Regular dialogue
+
+        // Extra wait if completion dialogue also played
+        if (battleUI.IsShowingDialogue())
+            yield return new WaitForSeconds(2.5f);
+
         battleUI.HideDialogue();
         EndPlayerTurn();
     }
@@ -196,17 +201,18 @@ public class BattleManager : MonoBehaviour
             }
         }
 
-        // Play slash on player position if damage goes through
         if (finalDamage > 0)
         {
-            slashEffect.Play(player.transform.position);
-            player.TakeDamage(finalDamage);
+            slashEffect.Play(enemy.transform.position, player.transform.position);
+            StartCoroutine(DamageAfterSlash(finalDamage));
         }
-
-        battleUI.UpdateHPBars(player, enemy);
-        state = BattleState.START;
-        turnManager.AdvanceTurn();
-        StartNextTurn();
+        else
+        {
+            battleUI.UpdateHPBars(player, enemy);
+            state = BattleState.START;
+            turnManager.AdvanceTurn();
+            StartNextTurn();
+        }
     }
 
     // ── End ─────────────────────────────────────────────────
@@ -249,5 +255,25 @@ public class BattleManager : MonoBehaviour
             SceneManager.LoadScene("BattleScene1");
         else
             SceneManager.LoadScene("PlayerMovement");
+    }
+
+
+    IEnumerator DamageAfterSlash(int damage)
+    {
+        yield return new WaitForSeconds(slashEffect.duration);
+        player.TakeDamage(damage);
+        battleUI.UpdateHPBars(player, enemy);
+        state = BattleState.START;
+        turnManager.AdvanceTurn();
+        StartNextTurn();
+    }
+
+    IEnumerator ShowCompletionDialogue(string[] lines)
+    {
+        // Wait for regular dialogue to finish
+        float regularDuration = 2.5f;
+        yield return new WaitForSeconds(regularDuration);
+
+        battleUI.ShowDialogue(lines);
     }
 }
