@@ -19,12 +19,11 @@ public class Unit : MonoBehaviour
     public List<Ability> abilities = new List<Ability>();
 
     [Header("Mercy System")]
-    public List<ActOption> actOptions = new List<ActOption>();  // Assign in Inspector per enemy
+    public List<ActOption> actOptions = new List<ActOption>();
+    public ObserveOption observeOption;    // ← drag per-enemy observe asset here
     public float mercyBar = 0f;
-
-    public Vector2 ghostScale = Vector2.one; 
-
     public bool mercyAvailable = false;
+    public Vector2 ghostScale = Vector2.one;
 
     [Header("2D References")]
     public SpriteRenderer spriteRenderer;
@@ -49,19 +48,43 @@ public class Unit : MonoBehaviour
     }
 
     // Returns true if mercy bar just became full
+    public MercyPhase GetCurrentPhase()
+    {
+        if (mercyBar < 33f) return MercyPhase.Phase1;
+        if (mercyBar < 67f) return MercyPhase.Phase2;
+        return MercyPhase.Phase3;
+    }
+
+    // Returns only the actions available in the current phase
+    public List<ActOption> GetCurrentPhaseActions()
+    {
+        MercyPhase current = GetCurrentPhase();
+        return actOptions.FindAll(a => a.phase == current);
+    }
+
+    // Returns the observe hints for the current phase
+    public string[] GetObserveHints()
+    {
+        if (observeOption == null) return new[] { "Nothing seems out of the ordinary..." };
+
+        return GetCurrentPhase() switch
+        {
+            MercyPhase.Phase1 => observeOption.phase1Hints,
+            MercyPhase.Phase2 => observeOption.phase2Hints,
+            _ => observeOption.phase3Hints
+        };
+    }
+
     public bool ApplyMercyGain(ActOption act)
     {
         act.useCount++;
+        if (act.useCount < act.requiredUses) return false;
 
-        // Only grant mercy if the action has been used enough times
-        if (act.useCount >= act.requiredUses)
+        mercyBar = Mathf.Min(100f, mercyBar + act.mercyGain);
+        if (mercyBar >= 100f && !mercyAvailable)
         {
-            mercyBar = Mathf.Min(100f, mercyBar + act.mercyGain);
-            if (mercyBar >= 100f && !mercyAvailable)
-            {
-                mercyAvailable = true;
-                return true;   // Signal that mercy just unlocked
-            }
+            mercyAvailable = true;
+            return true;
         }
         return false;
     }

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8416df98839a14341a3c026f8168a930, type: 3}
+  m_Name: Mage_Phase2_SitDowm
+  m_EditorClassIdentifier: Assembly-CSharp::ActOption
+  actionName: Sit Down
+  phase: 1
+  dialogueLines:
+  - '"You sit down on the charred ground next to him."'
+  - '"No words. Just presence."'
+  completionDialogueLines:
+  - '"The mage stares at you for a long moment."'
+  - '"Then, slowly, he sits too."'
+  - '"''There were silver birches here,'' he says quietly. ''Hundreds of them.''"'
+  - '"''They burned in a single night.''"'
+  mercyGain: 34
+  requiredUses: 1
+  useCount: 0

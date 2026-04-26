@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f4d6abb1ebe6524ab0a990e616f544e, type: 3}
+  m_Name: Knight_Observe
+  m_EditorClassIdentifier: Assembly-CSharp::ObserveOption
+  phase1Hints:
+  - '"He''s not looking at you. He''s looking through you."'
+  - '"His movements are mechanical. Practiced. Empty."'
+  - '"There''s a locket around his neck he keeps touching between strikes."'
+  - '"He doesn''t need to be defeated. He needs to be interrupted."'
+  - '"Say something unexpected. Break the pattern."'
+  phase2Hints:
+  - '"He hesitated just now. Did you see it?"'
+  - '"Something you said reached him. Keep going."'
+  - "\"The locket \u2014 he's gripping it now, not just touching it.\""
+  - '"He''s starting to come back. Don''t push. Let him."'
+  - '"Ask about her gently. Very gently."'
+  phase3Hints:
+  - '"He''s barely holding himself together."'
+  - "\"The anger isn't gone \u2014 but it's cracking.\""
+  - '"He''s remembering something. Give him space to feel it."'
+  - '"He needs to say her name. Help him get there."'
+  - '"Don''t fill the silence. Let it sit."'

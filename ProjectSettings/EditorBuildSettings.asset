@@ -6,13 +6,22 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/ForestPlatformerScene.unity
+    path: Assets/Scenes/Platformer/ForestPlatformerScene.unity
     guid: d45e510f4d3812244b5035ab77c891d5
   - enabled: 1
-    path: Assets/Scenes/BattleScene.unity
+    path: Assets/Scenes/Combats/MageCombat.unity
+    guid: 51fff5fbc74c3994d9df8731e29fa3c2
+  - enabled: 1
+    path: Assets/Scenes/Platformer/BattleFieldPlatformerScene.unity
+    guid: 9231b17a3b3a1464498066a71026360c
+  - enabled: 1
+    path: Assets/Scenes/Combats/KnightCombat.unity
     guid: 92f5010ade3d478408eff09d606a0dd6
   - enabled: 1
-    path: Assets/Scenes/BattleScene1.unity
-    guid: f80460222c8a1c5429cac4922d52856e
+    path: Assets/Scenes/Platformer/CastlePlatformerScene.unity
+    guid: b1e00c98591239848b66e711b85eb1b1
+  - enabled: 1
+    path: Assets/Scenes/Combats/RedSisterCombat.unity
+    guid: 403d578744ae3014a81a87481e1b822e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

@@ -3,109 +3,115 @@ using UnityEngine;
 
 public class SlashEffect : MonoBehaviour
 {
-    [Header("Slash Settings")]
-    public int slashCount = 3;              // How many slash lines per hit
-    public float slashDuration = 0.18f;     // How long each slash lasts
-    public float slashLength = 1.8f;        // Length of each slash line
-    public Color slashColor = new Color(1f, 1f, 1f, 1f);
-    public float lineWidth = 0.06f;
+    [Header("Sprite")]
+    public Sprite slashSprite;
+    public Color slashColor = Color.white;
+    public bool flipX = false;
 
-    private LineRenderer[] _lines;
+    [Header("Settings")]
+    public int slashCount = 3;
+    public float duration = 0.3f;        // Travel time per slash
+    public Vector2 baseScale = new Vector2(1.5f, 1.5f);
+    public float scaleVariance = 0.2f;
+    public float verticalSpread = 0.2f;       // Vertical offset between slashes
 
     void Awake()
     {
-        // Pre-create all line renderers so we don't allocate during gameplay
-        _lines = new LineRenderer[slashCount];
         for (int i = 0; i < slashCount; i++)
         {
-            var go = new GameObject($"SlashLine_{i}");
+            var go = new GameObject($"Slash_{i}");
             go.transform.SetParent(transform);
 
-            var lr = go.AddComponent<LineRenderer>();
-            lr.positionCount = 2;
-            lr.startWidth    = lineWidth;
-            lr.endWidth      = lineWidth * 0.3f;   // Taper toward the end
-            lr.material      = CreateSlashMaterial();
-            lr.startColor    = slashColor;
-            lr.endColor      = new Color(slashColor.r, slashColor.g, slashColor.b, 0f);
-            lr.sortingLayerName = "Units";
-            lr.sortingOrder     = 5;
-            lr.enabled          = false;
-
-            _lines[i] = lr;
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = slashSprite;
+            sr.color = new Color(slashColor.r, slashColor.g, slashColor.b, 0f);
+            sr.sortingLayerName = "Units";
+            sr.sortingOrder = 5;
         }
     }
 
-    // Creates an unlit material so the slash is always bright
-    Material CreateSlashMaterial()
-    {
-        var mat = new Material(Shader.Find("Sprites/Default"));
-        mat.color = Color.white;
-        return mat;
-    }
-
-    // Call this from BattleManager when enemy attacks
-    public void Play(Vector3 targetPosition)
+    // Now takes enemy AND player position
+    public void Play(Vector3 enemyPosition, Vector3 playerPosition)
     {
         StopAllCoroutines();
-        StartCoroutine(PlaySequence(targetPosition));
+        StartCoroutine(PlaySequence(enemyPosition, playerPosition));
     }
 
-    IEnumerator PlaySequence(Vector3 center)
+    IEnumerator PlaySequence(Vector3 from, Vector3 to)
     {
-        // Play slashes one after another with a tiny gap
+        // Point sprite in the direction of travel
+        Vector3 dir = (to - from).normalized;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
         for (int i = 0; i < slashCount; i++)
         {
-            StartCoroutine(AnimateSingleSlash(_lines[i], center, i));
-            yield return new WaitForSeconds(0.06f);   // Stagger each slash
+            var child = transform.GetChild(i);
+
+            // Stagger each slash slightly behind the previous
+            float delay = i * 0.07f;
+
+            // Offset vertically so slashes don't overlap perfectly
+            float vOffset = (i - slashCount / 2f) * verticalSpread;
+            Vector3 verticalShift = new Vector3(0f, vOffset, 0f);
+
+            StartCoroutine(AnimateSlash(child, from + verticalShift, to + verticalShift, angle, delay));
         }
+
+        // Wait for all slashes to finish before returning
+        yield return new WaitForSeconds(duration + slashCount * 0.07f);
     }
 
-    IEnumerator AnimateSingleSlash(LineRenderer lr, Vector3 center, int index)
+    IEnumerator AnimateSlash(Transform slashTransform, Vector3 from, Vector3 to, float angle, float delay)
     {
-        lr.enabled = true;
+        var sr = slashTransform.GetComponent<SpriteRenderer>();
 
-        // Each slash has a slightly different angle for a natural feel
-        float baseAngle  = Random.Range(-50f, -20f);           // Diagonal downward
-        float angleOffset = index * 15f;                        // Spread slashes apart
-        float angle = (baseAngle + angleOffset) * Mathf.Deg2Rad;
+        // Wait for stagger delay
+        yield return new WaitForSeconds(delay);
+        sr.flipX = flipX;
+        // Face the direction of travel
+        slashTransform.rotation = Quaternion.Euler(0f, 0f, angle);
 
-        // Direction vector for this slash
-        Vector3 dir = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f);
-
-        // Randomize start point slightly so they don't all overlap perfectly
-        Vector3 startOffset = new Vector3(
-            Random.Range(-0.3f, 0.1f),
-            Random.Range(-0.2f, 0.3f),
-            0f
+        // Randomize scale slightly
+        float scaleMultiplier = 1f + Random.Range(-scaleVariance, scaleVariance);
+        slashTransform.localScale = new Vector3(
+            baseScale.x * scaleMultiplier,
+            baseScale.y * scaleMultiplier,
+            1f
         );
 
-        Vector3 from = center + startOffset;
-        Vector3 to   = from + dir * slashLength;
-
-        // Animate the slash scaling from zero to full length then fading
         float elapsed = 0f;
-        while (elapsed < slashDuration)
+        while (elapsed < duration)
         {
-            float t     = elapsed / slashDuration;
-            float scale = t < 0.4f
-                ? Mathf.Lerp(0f, 1f, t / 0.4f)    // Grow in first 40%
-                : 1f;                               // Stay full for rest
+            float t = elapsed / duration;
 
-            float alpha = t < 0.5f
-                ? 1f
-                : Mathf.Lerp(1f, 0f, (t - 0.5f) / 0.5f);  // Fade out last 50%
+            // Move from enemy to player using smooth step
+            slashTransform.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t));
 
-            lr.SetPosition(0, from);
-            lr.SetPosition(1, Vector3.Lerp(from, to, scale));
+            // Fade in first 20%, full opacity middle, fade out last 25%
+            float alpha = t < 0.2f
+                ? Mathf.Lerp(0f, 1f, t / 0.2f)
+                : t > 0.75f
+                    ? Mathf.Lerp(1f, 0f, (t - 0.75f) / 0.25f)
+                    : 1f;
 
-            lr.startColor = new Color(slashColor.r, slashColor.g, slashColor.b, alpha);
-            lr.endColor   = new Color(slashColor.r, slashColor.g, slashColor.b, 0f);
+            // Scale punch on impact (last 25%)
+            float punch = t > 0.75f
+                ? 1f + Mathf.Sin((t - 0.75f) / 0.25f * Mathf.PI) * 0.3f
+                : 1f;
 
+            slashTransform.localScale = new Vector3(
+                baseScale.x * scaleMultiplier * punch,
+                baseScale.y * scaleMultiplier * punch,
+                1f
+            );
+
+            sr.color = new Color(slashColor.r, slashColor.g, slashColor.b, alpha);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        lr.enabled = false;
+        // Snap to player and reset
+        slashTransform.position = to;
+        sr.color = new Color(slashColor.r, slashColor.g, slashColor.b, 0f);
     }
 }

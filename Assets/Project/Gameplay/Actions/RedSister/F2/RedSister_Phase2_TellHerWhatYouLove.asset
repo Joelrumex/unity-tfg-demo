@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8416df98839a14341a3c026f8168a930, type: 3}
+  m_Name: RedSister_Phase2_TellHerWhatYouLove
+  m_EditorClassIdentifier: Assembly-CSharp::ActOption
+  actionName: Tell Her What You Love
+  phase: 1
+  dialogueLines:
+  - '"You tell her about something you love."'
+  - '"Something real. Something specific."'
+  - '"She listens with her head tilted, like an animal hearing a new sound."'
+  completionDialogueLines:
+  - '"''That''s passion,'' she says slowly."'
+  - '"''Yes,'' you say."'
+  - '"''Then why don''t you burn for it?'' she demands."'
+  - '"''I do,'' you say. ''Just not like you.''"'
+  - '"She goes quiet. That answer confused her."'
+  - '"Good."'
+  mercyGain: 34
+  requiredUses: 3
+  useCount: 0

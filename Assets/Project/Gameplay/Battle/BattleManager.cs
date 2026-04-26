@@ -6,6 +6,10 @@ public enum BattleState { START, PLAYER_TURN, ENEMY_TURN, WIN, LOSE }
 
 public class BattleManager : MonoBehaviour
 {
+
+    [SerializeField] private string nextSceneName = "BattleScene";
+    [SerializeField] private string previousSceneName = "BattleScene";
+
     [Header("References")]
     public TurnManager turnManager;
     public CombatSystem combatSystem;
@@ -34,30 +38,44 @@ public class BattleManager : MonoBehaviour
         state = BattleState.START;
         player.InitUnit();
         enemy.InitUnit();
+        mercySystem.ResetPhase();
 
         ApplyPreviousBattleEffects();
-
         turnManager.Init(player, enemy);
         enemyAI.Init(combatSystem);
         battleUI.Init(this);
 
         qteManager.OnQTEComplete += OnQTEComplete;
 
-        // Wire mercy events
         mercySystem.OnActUsed += lines => battleUI.ShowDialogue(lines);
+        mercySystem.OnActCompleted += lines => StartCoroutine(ShowCompletionDialogue(lines));
         mercySystem.OnMercyBarUpdated += val => battleUI.UpdateMercyBar(val);
+        mercySystem.OnPhaseChanged += phase => battleUI.ShowPhaseChange(phase);  // ← new
         mercySystem.OnMercyUnlocked += () => battleUI.ShowMercyUnlocked();
         mercySystem.OnMercyGranted += () => EndBattle(BattleState.WIN, wasMercy: true);
 
         battleUI.UpdateHPBars(player, enemy);
         battleUI.UpdateMercyBar(0f);
-
         battleUI.ShowBattleStartBonus(battleResult.lastOutcome);
 
-
-        yield return new WaitForSeconds(1f);
-        //battleResult.Clear();
+        yield return new WaitForSeconds(1.5f);
         StartNextTurn();
+    }
+
+    // Called by BattleUI when player clicks Observe
+    public void PlayerObserve()
+    {
+        if (state != BattleState.PLAYER_TURN) return;
+        mercySystem.Observe(enemy);
+        StartCoroutine(EndTurnAfterDialogue());
+    }
+
+    // Called by BattleUI when player picks an ACT option
+    public void PlayerUseAct(ActOption act)
+    {
+        if (state != BattleState.PLAYER_TURN) return;
+        mercySystem.UseActOption(act, enemy);
+        StartCoroutine(EndTurnAfterDialogue());
     }
 
     void ApplyPreviousBattleEffects()
@@ -100,15 +118,6 @@ public class BattleManager : MonoBehaviour
         EndPlayerTurn();
     }
 
-    // Called when player selects an ACT option from the menu
-    public void PlayerUseAct(ActOption act)
-    {
-        if (state != BattleState.PLAYER_TURN) return;
-        mercySystem.UseActOption(act, enemy);
-        // After dialogue is shown, player turn ends (BattleUI calls EndPlayerTurn via callback)
-        StartCoroutine(EndTurnAfterDialogue());
-    }
-
     // Called when player selects MERCY
     public void PlayerGrantMercy()
     {
@@ -119,8 +128,12 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator EndTurnAfterDialogue()
     {
-        // Wait for dialogue to finish displaying before advancing turn
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(2.5f);   // Regular dialogue
+
+        // Extra wait if completion dialogue also played
+        if (battleUI.IsShowingDialogue())
+            yield return new WaitForSeconds(2.5f);
+
         battleUI.HideDialogue();
         EndPlayerTurn();
     }
@@ -196,17 +209,18 @@ public class BattleManager : MonoBehaviour
             }
         }
 
-        // Play slash on player position if damage goes through
         if (finalDamage > 0)
         {
-            slashEffect.Play(player.transform.position);
-            player.TakeDamage(finalDamage);
+            slashEffect.Play(enemy.transform.position, player.transform.position);
+            StartCoroutine(DamageAfterSlash(finalDamage));
         }
-
-        battleUI.UpdateHPBars(player, enemy);
-        state = BattleState.START;
-        turnManager.AdvanceTurn();
-        StartNextTurn();
+        else
+        {
+            battleUI.UpdateHPBars(player, enemy);
+            state = BattleState.START;
+            turnManager.AdvanceTurn();
+            StartNextTurn();
+        }
     }
 
     // ── End ─────────────────────────────────────────────────
@@ -246,8 +260,28 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(2.5f);
 
         if (result == BattleState.WIN)
-            SceneManager.LoadScene("BattleScene1");
+            SceneManager.LoadScene(nextSceneName);
         else
-            SceneManager.LoadScene("PlayerMovement");
+            SceneManager.LoadScene(previousSceneName);
+    }
+
+
+    IEnumerator DamageAfterSlash(int damage)
+    {
+        yield return new WaitForSeconds(slashEffect.duration);
+        player.TakeDamage(damage);
+        battleUI.UpdateHPBars(player, enemy);
+        state = BattleState.START;
+        turnManager.AdvanceTurn();
+        StartNextTurn();
+    }
+
+    IEnumerator ShowCompletionDialogue(string[] lines)
+    {
+        // Wait for regular dialogue to finish
+        float regularDuration = 2.5f;
+        yield return new WaitForSeconds(regularDuration);
+
+        battleUI.ShowDialogue(lines);
     }
 }
