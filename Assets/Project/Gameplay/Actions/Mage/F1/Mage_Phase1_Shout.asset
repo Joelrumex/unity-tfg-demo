@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8416df98839a14341a3c026f8168a930, type: 3}
-  m_Name: Greet
+  m_Name: Mage_Phase1_Shout
   m_EditorClassIdentifier: Assembly-CSharp::ActOption
-  actionName: Greet him
+  actionName: Shout Back
+  phase: 0
   dialogueLines:
-  - '*Stares at you silently'
-  - '*Nothing happens'
-  completionDialogueLines:
-  - '*He is starting to get angry'
-  - '*You lost mercy gain'
-  mercyGain: -10
-  requiredUses: 3
-  useCount: 1
+  - '"You raise your voice to match his."'
+  - '"The mage''s eyes narrow. The temperature drops."'
+  - '"That made things worse."'
+  completionDialogueLines: []
+  mercyGain: 0
+  requiredUses: 1
+  useCount: 0

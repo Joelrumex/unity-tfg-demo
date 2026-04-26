@@ -2367,14 +2367,16 @@ MonoBehaviour:
   abilities:
   - {fileID: 11400000, guid: a3c050474adc7ab4db35b75d29e99987, type: 2}
   actOptions:
-  - {fileID: 11400000, guid: 8d21d47aaf2528f4bbdb44eeb8735162, type: 2}
-  - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
-  - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
-  - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
-  - {fileID: 11400000, guid: baec5a375786a4140ab854b872d0546e, type: 2}
+  - {fileID: 11400000, guid: 79948a303fff08948906ddb7a8814b75, type: 2}
+  - {fileID: 11400000, guid: eee73bbc8a7eacc44a4dd491dfa13c95, type: 2}
+  - {fileID: 11400000, guid: a22170d5816e3cf4ab7ec19f47293eab, type: 2}
+  - {fileID: 11400000, guid: 45ef9ba598cf05840b2d0b9222116e89, type: 2}
+  - {fileID: 11400000, guid: 42b988cf6c3ba9f4fa873cf3a547743b, type: 2}
+  - {fileID: 11400000, guid: ff4f597268231e543bd45ccfee3aa7a8, type: 2}
+  observeOption: {fileID: 11400000, guid: 2796ebf4c1a701c479626f99dea6703b, type: 2}
   mercyBar: 100
-  ghostScale: {x: 1, y: 1}
   mercyAvailable: 1
+  ghostScale: {x: 1, y: 1}
   spriteRenderer: {fileID: 1044630215}
   animator: {fileID: 0}
 --- !u!212 &1044630215
@@ -2739,9 +2741,10 @@ MonoBehaviour:
   speed: 15
   abilities: []
   actOptions: []
+  observeOption: {fileID: 0}
   mercyBar: 0
-  ghostScale: {x: 1, y: 1}
   mercyAvailable: 0
+  ghostScale: {x: 1, y: 1}
   spriteRenderer: {fileID: 1339934079}
   animator: {fileID: 0}
 --- !u!114 &1339934078
@@ -3385,6 +3388,7 @@ MonoBehaviour:
   actMenuPanel: {fileID: 928824319}
   actButtonsParent: {fileID: 712504862}
   actButtonPrefab: {fileID: 230841934}
+  actOverlay: {fileID: 0}
   dialoguePanel: {fileID: 2121053933}
   dialogueText: {fileID: 582644430}
   resultText: {fileID: 1535728467}

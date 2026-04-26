@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8416df98839a14341a3c026f8168a930, type: 3}
+  m_Name: Knight_Phase3_SayHerName
+  m_EditorClassIdentifier: Assembly-CSharp::ActOption
+  actionName: Say Her Name
+  phase: 2
+  dialogueLines:
+  - "\"You say her name \u2014 the Red Sister's, before she became what she is.\""
+  - '"The knight goes completely still."'
+  - '"''How do you know that name?'' he whispers."'
+  completionDialogueLines:
+  - '"''Because she told me,'' you say. ''The part of her that''s still her.''"'
+  - '"That''s not true. But he needs it to be."'
+  - '"He drops to one knee."'
+  - '"Not in defeat. In grief."'
+  - '"''I just wanted her back,'' he says."'
+  - '"''I know,'' you say, and mean it this time."'
+  mercyGain: 34
+  requiredUses: 2
+  useCount: 0

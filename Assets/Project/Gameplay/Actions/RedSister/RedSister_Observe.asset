@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f4d6abb1ebe6524ab0a990e616f544e, type: 3}
+  m_Name: RedSister_Observe
+  m_EditorClassIdentifier: Assembly-CSharp::ObserveOption
+  phase1Hints:
+  - '"She''s performing. Every movement is deliberate, theatrical."'
+  - '"She wants you afraid. She feeds on it."'
+  - '"Don''t show fear. But don''t show aggression either."'
+  - '"She''s never had someone simply refuse to react."'
+  - '"Be still. Be unreadable. It will unsettle her more than any weapon."'
+  phase2Hints:
+  - '"Something changed in her eyes just now."'
+  - '"She expected you to break. You haven''t."'
+  - '"She''s curious. For someone like her, that''s almost dangerous."'
+  - '"She understands passion. Show her a different kind."'
+  - '"Not love. Not pity. Conviction. Show her what you stand for."'
+  phase3Hints:
+  - '"She''s angry in a different way now. This is personal."'
+  - '"You''ve gotten under her skin. She doesn''t know what to do with that."'
+  - '"She''s never been truly seen before. Only feared."'
+  - '"Don''t back down. But don''t attack."'
+  - '"Speak to the part of her that existed before the anger consumed everything."'
+  - "\"If there's anything left in there \u2014 and there might not be \u2014 it's
+    very small.\""
+  - '"And very tired."'

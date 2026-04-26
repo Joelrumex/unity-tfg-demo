@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8416df98839a14341a3c026f8168a930, type: 3}
+  m_Name: Mage_Phase1_LowerWeapon
+  m_EditorClassIdentifier: Assembly-CSharp::ActOption
+  actionName: Lower Weapon
+  phase: 0
+  dialogueLines:
+  - '"You lower your weapon slowly."'
+  - '"The mage doesn''t lower his staff."'
+  - '"''Don''t think that changes anything,'' he snaps."'
+  completionDialogueLines: []
+  mercyGain: 0
+  requiredUses: 1
+  useCount: 0

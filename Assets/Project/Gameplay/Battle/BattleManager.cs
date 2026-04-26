@@ -34,31 +34,44 @@ public class BattleManager : MonoBehaviour
         state = BattleState.START;
         player.InitUnit();
         enemy.InitUnit();
+        mercySystem.ResetPhase();  
 
         ApplyPreviousBattleEffects();
-
         turnManager.Init(player, enemy);
         enemyAI.Init(combatSystem);
         battleUI.Init(this);
 
         qteManager.OnQTEComplete += OnQTEComplete;
 
-        // Wire mercy events
         mercySystem.OnActUsed += lines => battleUI.ShowDialogue(lines);
         mercySystem.OnActCompleted += lines => StartCoroutine(ShowCompletionDialogue(lines));
         mercySystem.OnMercyBarUpdated += val => battleUI.UpdateMercyBar(val);
+        mercySystem.OnPhaseChanged += phase => battleUI.ShowPhaseChange(phase);  // ← new
         mercySystem.OnMercyUnlocked += () => battleUI.ShowMercyUnlocked();
         mercySystem.OnMercyGranted += () => EndBattle(BattleState.WIN, wasMercy: true);
 
         battleUI.UpdateHPBars(player, enemy);
         battleUI.UpdateMercyBar(0f);
-
         battleUI.ShowBattleStartBonus(battleResult.lastOutcome);
 
-
-        yield return new WaitForSeconds(1f);
-        //battleResult.Clear();
+        yield return new WaitForSeconds(1.5f);
         StartNextTurn();
+    }
+
+    // Called by BattleUI when player clicks Observe
+    public void PlayerObserve()
+    {
+        if (state != BattleState.PLAYER_TURN) return;
+        mercySystem.Observe(enemy);
+        StartCoroutine(EndTurnAfterDialogue());
+    }
+
+    // Called by BattleUI when player picks an ACT option
+    public void PlayerUseAct(ActOption act)
+    {
+        if (state != BattleState.PLAYER_TURN) return;
+        mercySystem.UseActOption(act, enemy);
+        StartCoroutine(EndTurnAfterDialogue());
     }
 
     void ApplyPreviousBattleEffects()
@@ -99,15 +112,6 @@ public class BattleManager : MonoBehaviour
         combatSystem.UseAbility(ability, player, target);
         battleUI.UpdateHPBars(player, enemy);
         EndPlayerTurn();
-    }
-
-    // Called when player selects an ACT option from the menu
-    public void PlayerUseAct(ActOption act)
-    {
-        if (state != BattleState.PLAYER_TURN) return;
-        mercySystem.UseActOption(act, enemy);
-        // After dialogue is shown, player turn ends (BattleUI calls EndPlayerTurn via callback)
-        StartCoroutine(EndTurnAfterDialogue());
     }
 
     // Called when player selects MERCY

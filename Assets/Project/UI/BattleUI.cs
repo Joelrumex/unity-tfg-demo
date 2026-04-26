@@ -24,7 +24,8 @@ public class BattleUI : MonoBehaviour
     public GameObject actMenuPanel;       // Shown when player clicks ACT
     public Transform actButtonsParent;    // Vertical layout group
     public GameObject actButtonPrefab;    // Simple button prefab with TextMeshPro
-
+    [Header("Act Overlay")]
+    public GameObject actOverlay;   // ← drag ActOverlay GameObject here in Inspector
     [Header("Dialogue")]
     public GameObject dialoguePanel;
     public TextMeshProUGUI dialogueText;
@@ -135,44 +136,78 @@ public class BattleUI : MonoBehaviour
 
     void ShowActMenu()
     {
+        actOverlay.SetActive(true);
         actMenuPanel.SetActive(true);
         mainMenuPanel.SetActive(false);
 
-        // Clear old buttons
         foreach (var b in _actButtons) Destroy(b);
         _actButtons.Clear();
 
-        // Spawn one button per ACT option
-        foreach (var act in _bm.enemy.actOptions)
+        // ── Observe button — always first ──────────────────────
+        var observeGO = Instantiate(actButtonPrefab, actButtonsParent);
+        var observeBtn = observeGO.GetComponent<Button>();
+        var observeLabel = observeGO.GetComponentInChildren<TextMeshProUGUI>();
+        observeLabel.text = "👁 Observe";
+        observeLabel.color = new Color(0.95f, 0.85f, 0.3f);   // Gold color
+        observeBtn.onClick.AddListener(() =>
+        {
+            actOverlay.SetActive(false);
+            actMenuPanel.SetActive(false);
+            _bm.PlayerObserve();
+        });
+        _actButtons.Add(observeGO);
+
+        // ── Phase-specific actions ──────────────────────────────
+        foreach (var act in _bm.enemy.GetCurrentPhaseActions())
         {
             var go = Instantiate(actButtonPrefab, actButtonsParent);
             var btn = go.GetComponent<Button>();
             var label = go.GetComponentInChildren<TextMeshProUGUI>();
             label.text = act.actionName;
 
-            // Capture act in closure
             var capturedAct = act;
             btn.onClick.AddListener(() =>
             {
+                actOverlay.SetActive(false);
                 actMenuPanel.SetActive(false);
                 _bm.PlayerUseAct(capturedAct);
             });
             _actButtons.Add(go);
         }
 
-        // Back button
+        // ── Back button — always last ───────────────────────────
         var backGO = Instantiate(actButtonPrefab, actButtonsParent);
         var backBtn = backGO.GetComponent<Button>();
-        var backLabel = backGO.GetComponentInChildren<TextMeshProUGUI>();
-        backLabel.text = "← Back";
+        backGO.GetComponentInChildren<TextMeshProUGUI>().text = "← Back";
         backBtn.onClick.AddListener(() =>
         {
+            actOverlay.SetActive(false);
             actMenuPanel.SetActive(false);
             ShowMainMenu(_bm.enemy.mercyAvailable);
         });
         _actButtons.Add(backGO);
     }
 
+    public void ShowPhaseChange(MercyPhase phase)
+    {
+        string message = phase switch
+        {
+            MercyPhase.Phase2 => "Something is shifting...",
+            MercyPhase.Phase3 => "You can feel the tension lifting...",
+            _ => ""
+        };
+        if (message != "") StartCoroutine(FlashPhaseMessage(message));
+    }
+
+    IEnumerator FlashPhaseMessage(string message)
+    {
+        // Reuse the bonusAnnouncerText or result text briefly
+        bonusAnnouncerText.text = message;
+        bonusAnnouncerText.color = new Color(0.6f, 0.85f, 1f, 1f);
+        bonusAnnouncerText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        bonusAnnouncerText.gameObject.SetActive(false);
+    }
     // ── Mercy bar ─────────────────────────────────────────────
 
     public void UpdateMercyBar(float value)
