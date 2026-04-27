@@ -89,6 +89,6 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Jugador muerto");
-        SceneManager.LoadScene("ForestPlatformerScene");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
