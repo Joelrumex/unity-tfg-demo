@@ -38,6 +38,7 @@ public class PlayerHealth : MonoBehaviour
     {
         healthBar.SetMaxHealth(health);
         health = PlayerManager.Instance.playerHealth;
+        healthBar.SetHealth(health);   // ← add this line
     }
 
     public void TakeDamage(int amount, Vector2 damageSource)
@@ -90,5 +91,13 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Jugador muerto");
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void RestoreFullHP()
+    {
+        health = 100;                              // reset to max
+        PlayerManager.Instance.playerHealth = health;   // persist via PlayerManager
+        healthBar.SetHealth(health);               // update the UI bar
+        Debug.Log($"Player HP restored to full: {health}");
     }
 }
