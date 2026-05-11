@@ -2325,7 +2325,7 @@ MonoBehaviour:
   mercyAvailable: 1
   ghostScale: {x: 1, y: 1}
   spriteRenderer: {fileID: 1044630215}
-  animator: {fileID: 0}
+  animator: {fileID: 1044630217}
 --- !u!212 &1044630215
 SpriteRenderer:
   serializedVersion: 2
@@ -3235,6 +3235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlashEffect
   slashSprite: {fileID: -3696019449777573715, guid: d00768c47e93d0f428542d46267e51cc, type: 3}
+  playerSlashSprite: {fileID: -339516178220321277, guid: 75b1a2f7cb6173c4d826963a35f18512, type: 3}
   slashColor: {r: 1, g: 1, b: 1, a: 1}
   flipX: 1
   slashCount: 1

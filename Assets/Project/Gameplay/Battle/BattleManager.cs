@@ -104,18 +104,36 @@ public class BattleManager : MonoBehaviour
     public void PlayerAttack()
     {
         if (state != BattleState.PLAYER_TURN) return;
-        combatSystem.CalculatePhysicalDamage(player, enemy);
-        battleUI.UpdateHPBars(player, enemy);
-        EndPlayerTurn();
+        battleUI.HideMainMenu();
+        slashEffect.PlayAsPlayer(player.transform.position, enemy.transform.position);  // ← change
+        StartCoroutine(PlayerDamageAfterSlash(() =>
+        {
+            combatSystem.CalculatePhysicalDamage(player, enemy);
+            battleUI.UpdateHPBars(player, enemy);
+        }));
     }
 
     public void PlayerUseAbility(Ability ability)
     {
         if (state != BattleState.PLAYER_TURN) return;
+        battleUI.HideMainMenu();
         Unit target = ability.targetsEnemy ? enemy : player;
-        combatSystem.UseAbility(ability, player, target);
-        battleUI.UpdateHPBars(player, enemy);
-        EndPlayerTurn();
+
+        if (ability.targetsEnemy)
+        {
+            slashEffect.PlayAsPlayer(player.transform.position, enemy.transform.position);  // ← change
+            StartCoroutine(PlayerDamageAfterSlash(() =>
+            {
+                combatSystem.UseAbility(ability, player, target);
+                battleUI.UpdateHPBars(player, enemy);
+            }));
+        }
+        else
+        {
+            combatSystem.UseAbility(ability, player, target);
+            battleUI.UpdateHPBars(player, enemy);
+            EndPlayerTurn();
+        }
     }
 
     // Called when player selects MERCY
@@ -169,13 +187,19 @@ public class BattleManager : MonoBehaviour
     {
         if (state != BattleState.ENEMY_TURN) yield break;
         battleUI.HideMainMenu();
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
+
+        // Play attack animation
+        enemy.PlayAttackAnimation();
+
+        yield return new WaitForSeconds(0.4f);   // Let animation wind up
 
         _pendingEnemyDamage = enemyAI.CalculateDamage(enemy, player);
         if (_pendingEnemyDamage > 0)
             qteManager.StartQTE();
         else
         {
+            enemy.StopAttackAnimation();
             state = BattleState.START;
             turnManager.AdvanceTurn();
             StartNextTurn();
@@ -191,29 +215,23 @@ public class BattleManager : MonoBehaviour
             _ => _pendingEnemyDamage
         };
 
+        // Always stop attack animation when QTE resolves
+        enemy.StopAttackAnimation();   // ← add this
+
         if (finalDamage > 0 && battleResult.lastOutcome == BattleOutcome.Mercy)
         {
             bool shielded = Random.value < battleResult.shieldChance;
             if (shielded)
             {
                 finalDamage = 0;
-
-                // 1 — Ghost appears immediately
                 shieldGhost.Appear(
                     battleResult.merciedEnemySprite,
                     player.transform.position,
                     battleResult.merciedEnemyGhostScale
                 );
-
-                // 2 — When slash arrives it triggers the block animation
                 slashEffect.OnImpact = () => shieldGhost.Block();
-
-                // 3 — Play slash toward the ghost
                 slashEffect.Play(enemy.transform.position, player.transform.position);
-
                 battleUI.ShowShieldPopup();
-
-                // 4 — Advance turn after block animation finishes
                 StartCoroutine(AdvanceTurnAfterBlock());
                 return;
             }
@@ -221,7 +239,7 @@ public class BattleManager : MonoBehaviour
 
         if (finalDamage > 0)
         {
-            slashEffect.OnImpact = null;   // No block — clear callback
+            slashEffect.OnImpact = null;
             slashEffect.Play(enemy.transform.position, player.transform.position);
             StartCoroutine(DamageAfterSlash(finalDamage));
         }
@@ -290,11 +308,38 @@ public class BattleManager : MonoBehaviour
     IEnumerator DamageAfterSlash(int damage)
     {
         yield return new WaitForSeconds(slashEffect.duration);
-        player.TakeDamage(damage);
+
+        // Stop attack animation when slash lands
+        enemy.StopAttackAnimation();
+
+        player.TakeDamageRaw(damage);
         battleUI.UpdateHPBars(player, enemy);
+
+        yield return new WaitForSeconds(0.1f);
+        player.TriggerHurtFlash();
+
         state = BattleState.START;
         turnManager.AdvanceTurn();
         StartNextTurn();
+    }
+
+    IEnumerator PlayerDamageAfterSlash(System.Action onImpact)
+    {
+        yield return new WaitForSeconds(slashEffect.duration);
+
+        onImpact?.Invoke();
+
+        // Flash enemy after slash fades
+        yield return new WaitForSeconds(0.1f);
+        enemy.TriggerHurtFlash();
+
+        if (enemy.IsDead())
+        {
+            EndBattle(BattleState.WIN, wasMercy: false);
+            yield break;
+        }
+
+        EndPlayerTurn();
     }
 
     IEnumerator ShowCompletionDialogue(string[] lines)

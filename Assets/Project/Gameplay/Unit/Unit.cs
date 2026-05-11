@@ -29,6 +29,18 @@ public class Unit : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Animator animator;
 
+
+    public void PlayAttackAnimation()
+    {
+        if (animator != null)
+            animator.SetBool("IsAttacking", true);
+    }
+
+    public void StopAttackAnimation()
+    {
+        if (animator != null)
+            animator.SetBool("IsAttacking", false);
+    }
     public virtual void InitUnit()
     {
         if (isPlayerUnit)
@@ -95,12 +107,18 @@ public class Unit : MonoBehaviour
         int damage = Mathf.Max(1, rawDamage - defense);
         currentHP -= damage;
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
-        if (isPlayerUnit)
-        {
-            PlayerManager.Instance.playerHealth = currentHP;
-        }
-        Debug.Log($"{unitName} took {damage} damage. HP: {currentHP}/{maxHP}");
         return damage;
+    }
+
+    public void TakeDamageRaw(int damage)
+    {
+        currentHP -= damage;
+        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+    }
+
+    public void TriggerHurtFlash()
+    {
+        StartCoroutine(HurtFlash());
     }
 
     public void Heal(int amount)

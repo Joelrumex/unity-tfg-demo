@@ -2905,6 +2905,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShieldGhost
   baseSize: 0.08
+  blockShakeDuration: 0.3
+  blockShakeIntensity: 0.08
+  blockFlashColor: {r: 0.8, g: 0.95, b: 1, a: 1}
 --- !u!1 &1044630213
 GameObject:
   m_ObjectHideFlags: 0
@@ -2958,7 +2961,7 @@ MonoBehaviour:
   mercyAvailable: 1
   ghostScale: {x: 1, y: 1}
   spriteRenderer: {fileID: 1044630215}
-  animator: {fileID: 0}
+  animator: {fileID: 1044630217}
 --- !u!212 &1044630215
 SpriteRenderer:
   serializedVersion: 2
@@ -3806,6 +3809,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlashEffect
   slashSprite: {fileID: -6369879539158651996, guid: 900826f3455b0e249905705099a3ae0f, type: 3}
+  playerSlashSprite: {fileID: 0}
   slashColor: {r: 1, g: 1, b: 1, a: 1}
   flipX: 1
   slashCount: 1

@@ -5,6 +5,7 @@ public class SlashEffect : MonoBehaviour
 {
     [Header("Sprite")]
     public Sprite slashSprite;
+    public Sprite playerSlashSprite;
     public Color slashColor = Color.white;
     public bool flipX = false;
     public System.Action OnImpact;
@@ -31,10 +32,28 @@ public class SlashEffect : MonoBehaviour
     }
 
     // Now takes enemy AND player position
-    public void Play(Vector3 enemyPosition, Vector3 playerPosition)
+    public void Play(Vector3 from, Vector3 to)
     {
         StopAllCoroutines();
-        StartCoroutine(PlaySequence(enemyPosition, playerPosition));
+        SetSlashSprite(slashSprite);
+        StartCoroutine(PlaySequence(from, to));
+    }
+
+    public void PlayAsPlayer(Vector3 from, Vector3 to)
+    {
+        StopAllCoroutines();
+        SetSlashSprite(playerSlashSprite != null ? playerSlashSprite : slashSprite);
+        StartCoroutine(PlaySequence(from, to));
+    }
+
+    // Applies the sprite to all pre-created children
+    void SetSlashSprite(Sprite sprite)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var sr = transform.GetChild(i).GetComponent<SpriteRenderer>();
+            if (sr != null) sr.sprite = sprite;
+        }
     }
 
     IEnumerator PlaySequence(Vector3 from, Vector3 to)
