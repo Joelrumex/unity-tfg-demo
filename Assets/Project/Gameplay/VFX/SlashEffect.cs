@@ -7,7 +7,7 @@ public class SlashEffect : MonoBehaviour
     public Sprite slashSprite;
     public Color slashColor = Color.white;
     public bool flipX = false;
-
+    public System.Action OnImpact;
     [Header("Settings")]
     public int slashCount = 3;
     public float duration = 0.3f;        // Travel time per slash
@@ -39,26 +39,21 @@ public class SlashEffect : MonoBehaviour
 
     IEnumerator PlaySequence(Vector3 from, Vector3 to)
     {
-        // Point sprite in the direction of travel
         Vector3 dir = (to - from).normalized;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
         for (int i = 0; i < slashCount; i++)
         {
             var child = transform.GetChild(i);
-
-            // Stagger each slash slightly behind the previous
             float delay = i * 0.07f;
-
-            // Offset vertically so slashes don't overlap perfectly
             float vOffset = (i - slashCount / 2f) * verticalSpread;
-            Vector3 verticalShift = new Vector3(0f, vOffset, 0f);
-
-            StartCoroutine(AnimateSlash(child, from + verticalShift, to + verticalShift, angle, delay));
+            StartCoroutine(AnimateSlash(child, from + new Vector3(0, vOffset, 0),
+                                              to + new Vector3(0, vOffset, 0), angle, delay));
         }
 
-        // Wait for all slashes to finish before returning
-        yield return new WaitForSeconds(duration + slashCount * 0.07f);
+        // Fire impact callback when first slash arrives
+        yield return new WaitForSeconds(duration);
+        OnImpact?.Invoke();
     }
 
     IEnumerator AnimateSlash(Transform slashTransform, Vector3 from, Vector3 to, float angle, float delay)

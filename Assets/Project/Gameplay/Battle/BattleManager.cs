@@ -197,17 +197,31 @@ public class BattleManager : MonoBehaviour
             if (shielded)
             {
                 finalDamage = 0;
+
+                // 1 — Ghost appears immediately
                 shieldGhost.Appear(
                     battleResult.merciedEnemySprite,
                     player.transform.position,
                     battleResult.merciedEnemyGhostScale
                 );
+
+                // 2 — When slash arrives it triggers the block animation
+                slashEffect.OnImpact = () => shieldGhost.Block();
+
+                // 3 — Play slash toward the ghost
+                slashEffect.Play(enemy.transform.position, player.transform.position);
+
                 battleUI.ShowShieldPopup();
+
+                // 4 — Advance turn after block animation finishes
+                StartCoroutine(AdvanceTurnAfterBlock());
+                return;
             }
         }
 
         if (finalDamage > 0)
         {
+            slashEffect.OnImpact = null;   // No block — clear callback
             slashEffect.Play(enemy.transform.position, player.transform.position);
             StartCoroutine(DamageAfterSlash(finalDamage));
         }
@@ -218,6 +232,16 @@ public class BattleManager : MonoBehaviour
             turnManager.AdvanceTurn();
             StartNextTurn();
         }
+    }
+
+    IEnumerator AdvanceTurnAfterBlock()
+    {
+        // Wait for slash travel + block animation to finish
+        yield return new WaitForSeconds(slashEffect.duration + 0.6f);
+        battleUI.UpdateHPBars(player, enemy);
+        state = BattleState.START;
+        turnManager.AdvanceTurn();
+        StartNextTurn();
     }
 
     // ── End ─────────────────────────────────────────────────
