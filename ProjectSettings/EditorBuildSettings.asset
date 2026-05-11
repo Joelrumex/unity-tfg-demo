@@ -23,5 +23,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Combats/RedSisterCombat.unity
     guid: 403d578744ae3014a81a87481e1b822e
+  - enabled: 0
+    path: Assets/Scenes/UI/DeathScene.unity
+    guid: 763e68dea5a0b4245a46bc5842cff534
+  - enabled: 1
+    path: Assets/Scenes/UI/GenocideScene.unity
+    guid: 0515c93cb9808314ea8783d2a1d8f590
+  - enabled: 1
+    path: Assets/Scenes/UI/PacifistScene.unity
+    guid: 149a46fd29c5f184ea5ed1bf74952571
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

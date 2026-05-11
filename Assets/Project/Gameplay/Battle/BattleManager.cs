@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public enum BattleState { START, PLAYER_TURN, ENEMY_TURN, WIN, LOSE }
 
@@ -10,6 +11,12 @@ public class BattleManager : MonoBehaviour
     [SerializeField] private string nextSceneName = "BattleScene";
     [SerializeField] private string previousSceneName = "BattleScene";
 
+    [Header("Ending")]
+    public bool isFinalBattle = false;
+
+
+    public Image fadePanel;
+    
     [Header("References")]
     public TurnManager turnManager;
     public CombatSystem combatSystem;
@@ -296,12 +303,35 @@ public class BattleManager : MonoBehaviour
 
     IEnumerator LoadNextScene(BattleState result)
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(2f);
 
-        if (result == BattleState.WIN)
+        // Fade to black
+        if (fadePanel != null)
+        {
+            fadePanel.gameObject.SetActive(true);
+            float elapsed = 0f;
+            Color c = fadePanel.color;
+            while (elapsed < 0.8f)
+            {
+                c.a = Mathf.Lerp(0f, 1f, elapsed / 0.8f);
+                fadePanel.color = c;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        if (result == BattleState.WIN && isFinalBattle)
+        {
+            // Route to correct ending
+            if (battleResult.IsPacifistEnding())
+                SceneManager.LoadScene("PacifistScene");
+            else
+                SceneManager.LoadScene("GenocideScene");
+        }
+        else if (result == BattleState.WIN)
+        {
             SceneManager.LoadScene(nextSceneName);
-        else
-            SceneManager.LoadScene(previousSceneName);
+        }
     }
 
 
